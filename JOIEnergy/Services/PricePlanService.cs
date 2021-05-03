@@ -20,11 +20,20 @@ namespace JOIEnergy.Services
 
         private decimal calculateAverageReading(List<ElectricityReading> electricityReadings)
         {
-            var newSummedReadings = electricityReadings.Select(readings => readings.Reading).Aggregate((reading, accumulator) => reading + accumulator);
+            var newSummedReadings = electricityReadings
+                .Select(readings => readings.Reading)
+                .Aggregate((reading, accumulator) => reading + accumulator);
 
             return newSummedReadings / electricityReadings.Count();
         }
+        private decimal calculateAverageReadingCost(List<ElectricityReading> electricityReadings, PricePlan pricePlan)
+        {
+            decimal totalCostPerReading = 0;
+            electricityReadings.ForEach(readings =>
+                totalCostPerReading += readings.Reading * pricePlan.GetPrice(readings.Time));
 
+            return totalCostPerReading / electricityReadings.Count();
+        }
         private decimal calculateTimeElapsed(List<ElectricityReading> electricityReadings)
         {
             var first = electricityReadings.Min(reading => reading.Time);
@@ -34,10 +43,11 @@ namespace JOIEnergy.Services
         }
         private decimal calculateCost(List<ElectricityReading> electricityReadings, PricePlan pricePlan)
         {
-            var average = calculateAverageReading(electricityReadings);
+            var average = calculateAverageReadingCost(electricityReadings, pricePlan);
             var timeElapsed = calculateTimeElapsed(electricityReadings);
-            var averagedCost = average/timeElapsed;
-            return averagedCost * pricePlan.UnitRate;
+            var averagedCost = average / timeElapsed;
+
+            return averagedCost;
         }
 
         public Dictionary<String, decimal> GetConsumptionCostOfElectricityReadingsForEachPricePlan(String smartMeterId)
@@ -48,7 +58,9 @@ namespace JOIEnergy.Services
             {
                 return new Dictionary<string, decimal>();
             }
-            return _pricePlans.ToDictionary(plan => plan.EnergySupplier.ToString(), plan => calculateCost(electricityReadings, plan));
+            return _pricePlans.ToDictionary(
+                plan => plan.EnergySupplier.ToString(),
+                plan => calculateCost(electricityReadings, plan));
         }
     }
 }

@@ -17,7 +17,7 @@ namespace JOIEnergy.Tests
                 EnergySupplier = Supplier.TheGreenEco,
                 UnitRate = 20m,
                 PeakTimeMultiplier = new List<PeakTimeMultiplier> {
-                    new PeakTimeMultiplier { 
+                    new PeakTimeMultiplier {
                         DayOfWeek = DayOfWeek.Saturday,
                         Multiplier = 2m
                     },
@@ -30,20 +30,29 @@ namespace JOIEnergy.Tests
         }
 
         [Fact]
-        public void TestGetEnergySupplier() {
+        public void TestGetEnergySupplier()
+        {
             Assert.Equal(Supplier.TheGreenEco, _pricePlan.EnergySupplier);
         }
 
         [Fact]
-        public void TestGetBasePrice() {
+        public void TestGetBasePrice()
+        {
             Assert.Equal(20m, _pricePlan.GetPrice(new DateTime(2018, 1, 2)));
         }
 
-        [Fact]
-        public void TestGetPeakTimePrice()
+        [Theory]
+        [MemberData(nameof(TestGetPeakTimePriceInput))]
+        public void TestGetPeakTimePrice(decimal expected, DateTime date)
         {
-            Assert.Equal(40m, _pricePlan.GetPrice(new DateTime(2018, 1, 6)));
+            Assert.Equal(expected, _pricePlan.GetPrice(date));
         }
+
+        public static readonly object[][] TestGetPeakTimePriceInput =
+        {
+            new object[] { 40m, new DateTime(2018, 1, 6) },
+            new object[] { 200m, new DateTime(2018, 1, 7) }
+        };
 
     }
 }
