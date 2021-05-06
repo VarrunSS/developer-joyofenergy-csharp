@@ -6,6 +6,7 @@ namespace JOIEnergy.Enums
         DrEvilsDarkEnergy,
         TheGreenEco,
         PowerForEveryone,
+        SuperSaver,
         NullSupplier
     }
 }

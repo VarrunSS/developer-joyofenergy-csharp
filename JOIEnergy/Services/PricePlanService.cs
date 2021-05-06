@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JOIEnergy.Domain;
+using JOIEnergy.Utility;
 
 namespace JOIEnergy.Services
 {
@@ -61,6 +62,20 @@ namespace JOIEnergy.Services
             return _pricePlans.ToDictionary(
                 plan => plan.EnergySupplier.ToString(),
                 plan => calculateCost(electricityReadings, plan));
+        }
+
+        public Dictionary<string, decimal> GetConsumptionCostOfElectricityReadingsForPricePlan(
+            string smartMeterId, Enums.Supplier EnergySupplier, DateTime startDate, DateTime endDate)
+        {
+            var electricityReadings = _meterReadingService.GetReadings(smartMeterId)
+                                            .Where(v => v.Time > startDate && v.Time <= endDate).ToList();
+
+            if (!electricityReadings.Any())
+                throw new Exception("No electricity readings found for duration");
+
+            return _pricePlans.Where(v => v.EnergySupplier == EnergySupplier).ToDictionary(
+               plan => plan.EnergySupplier.ToString(),
+               plan => calculateCost(electricityReadings, plan));
         }
     }
 }

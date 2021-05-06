@@ -19,8 +19,8 @@ namespace JOIEnergy.Generator
                 var reading = (decimal)random.NextDouble();
                 var electricityReading = new ElectricityReading
                 {
-                    Reading = reading,
-                    Time = DateTime.Now.AddSeconds(-i * 10)
+                    Reading = reading * 6 * 60,
+                    Time = DateTime.Now.AddHours(-i * 10)
                 };
                 readings.Add(electricityReading);
             }

@@ -37,7 +37,8 @@ namespace JOIEnergy.Utility
                     UnitRate = 10m,
                     PeakTimeMultiplier = new List<PeakTimeMultiplier>()
                     {
-                        new PeakTimeMultiplier() { DayOfWeek = DayOfWeek.Tuesday, Multiplier = 1 }
+                        new PeakTimeMultiplier() { DayOfWeek = DayOfWeek.Tuesday, Multiplier = 1 },
+                        new PeakTimeMultiplier() { DayOfWeek = DayOfWeek.Wednesday, Multiplier = 10 }
                     }
                 },
                 new PricePlan{
@@ -53,7 +54,15 @@ namespace JOIEnergy.Utility
                     UnitRate = 1m,
                     PeakTimeMultiplier = new List<PeakTimeMultiplier>()
                      {
-                        new PeakTimeMultiplier() { DayOfWeek = DayOfWeek.Tuesday, Multiplier = 8 }
+                        new PeakTimeMultiplier() { DayOfWeek = DayOfWeek.Monday, Multiplier = 8 }
+                    }
+                },
+                new PricePlan{
+                    EnergySupplier = Enums.Supplier.SuperSaver,
+                    UnitRate = 0.6m,
+                    PeakTimeMultiplier = new List<PeakTimeMultiplier>()
+                     {
+                        new PeakTimeMultiplier() { DayOfWeek = DayOfWeek.Tuesday, Multiplier = 2 }
                     }
                 }
             };
@@ -68,7 +77,7 @@ namespace JOIEnergy.Utility
 
             foreach (var smartMeterId in smartMeterIds)
             {
-                readings.Add(smartMeterId, generator.Generate(20));
+                readings.Add(smartMeterId, generator.Generate(300));
             }
             return readings;
         }
@@ -83,7 +92,8 @@ namespace JOIEnergy.Utility
                     { "smart-meter-1", Supplier.TheGreenEco },
                     { "smart-meter-2", Supplier.DrEvilsDarkEnergy },
                     { "smart-meter-3", Supplier.PowerForEveryone },
-                    { "smart-meter-4", Supplier.TheGreenEco }
+                    { "smart-meter-4", Supplier.TheGreenEco },
+                    { "smart-meter-5", Supplier.SuperSaver }
                 };
             }
         }
